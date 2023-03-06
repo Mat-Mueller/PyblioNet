@@ -9,6 +9,9 @@ Biblionet covers two main components. The first component is a python based data
 
 The second component is a html / JavaScript analysis and visualisation tool building on the [VisJs](https://visjs.github.io/vis-network/docs/network/) Package. In the network each node represents a publication. Each edge represents a citation relation between two publications. Nodes’ positions are calculated via a force-directed or hierarchical layout algorithm. The analysis tool allows for filtering, and graphical analysis. Filtering can be done based on publication date, degree centrality or weight etc. Graphical analysis covers e.g. searching and highlighting nodes based on user input, community detection based on a louvain cluster detection method.
 
+![alt text](https://aidaho-edu.uni-hohenheim.de/gitlab/M_Mueller/pyblionet/-/blob/main/Examples/PyblioNet1.jpg)
+
+
 ## Installation
 Download the .py and template.html file. Make sure they are in the same directory and run the Python file.
 
