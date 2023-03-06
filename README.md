@@ -13,7 +13,7 @@ The second component is a html / JavaScript analysis and visualisation tool buil
 
 
 ## Installation
-Download the .py and template.html file. Make sure they are in the same directory and run the Python file. ALternatively to the python file you can download the .exe and run it.
+Download the .py and template.html file. Make sure they are in the same directory and run the Python file. Alternatively to the python file you can download the .exe and run it.
 
 ## Support
 Contact: m_mueller@uni-hohenheim.de
