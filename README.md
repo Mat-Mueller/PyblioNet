@@ -18,6 +18,9 @@ Download the .py and template.html file. Make sure they are in the same director
 ## Support
 Contact: m_mueller@uni-hohenheim.de
 
+## Usage
+Start the .py or .exe file. Upon first usage you will need to enter a [Scopus APi key](https://dev.elsevier.com/sc_apis.html). Afterwards, simply enter your search term and follow the instructions. Pyblionet will create a html file with the resulting network.
+
 ## License
 MIT License; see [LICENSE](https://aidaho-edu.uni-hohenheim.de/gitlab/M_Mueller/pyblionet/-/blob/main/license).
 
