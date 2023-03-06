@@ -11,6 +11,9 @@ The second component is a html / JavaScript analysis and visualisation tool buil
 
 ![example chart](Examples/PyblioNet1.jpg)
 
+## Usage
+Start the .py or .exe file. Upon first usage you will need to enter a [Scopus APi key](https://dev.elsevier.com/sc_apis.html). Afterwards, simply enter your search term and follow the instructions. Pyblionet will create a html file with the resulting network.
+
 
 ## Installation
 Download the .py and template.html file. Make sure they are in the same directory and run the Python file. Alternatively to the python file you can download the .exe and run it.
@@ -18,8 +21,7 @@ Download the .py and template.html file. Make sure they are in the same director
 ## Support
 Contact: m_mueller@uni-hohenheim.de
 
-## Usage
-Start the .py or .exe file. Upon first usage you will need to enter a [Scopus APi key](https://dev.elsevier.com/sc_apis.html). Afterwards, simply enter your search term and follow the instructions. Pyblionet will create a html file with the resulting network.
+
 
 ## License
 MIT License; see [LICENSE](https://aidaho-edu.uni-hohenheim.de/gitlab/M_Mueller/pyblionet/-/blob/main/license).
