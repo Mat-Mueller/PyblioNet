@@ -1,8 +1,6 @@
 # PyblioNet
 
 
-## Name
-Pyblionet
 
 ## Description
 Biblionet covers two main components. The first component is a python based data collection tool which downloads publication data from the Scopus database via [Pybliometrics](https://pybliometrics.readthedocs.io/en/stable/). Initial Scopus search is done by the user via advanced search query strings using the scopus search api. Based on this initial publication data, further information on cited and citing research are collected which e.g. allows for computing bibliographic coupling and co-citation relationships for the initial publication data (using the scopus Abstract Retrieval API and scopus Search API). The publication data is then used to create a network where each publication is represented as a node in the network. Relationships are then computed based on citation analysis, co-citation analysis, co-authorship analysis, bibliographic coupling, co-word analysis and keyword analysis.
