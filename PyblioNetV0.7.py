@@ -3,7 +3,7 @@ import networkx as nx
 from pybliometrics.scopus import ScopusSearch
 from collections import Counter
 
-#zegi3ed
+
 
 ## The whole package includes 3 major steps: (1) get data from scopus; (2) compute network relations and (3) copy the information into an html file containing filters etc.
 
