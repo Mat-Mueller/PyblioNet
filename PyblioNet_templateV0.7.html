@@ -1468,8 +1468,9 @@ Citing: paper citing main papers">
 
                     }
                     switch (resizer.value) {
-                        nodesMain.refresh;
+
                         case "degree":
+                         nodesMain.refresh;
                             allNodes = nodesMain.get({ returnType: "Object" });
                             var updateArray = [];
                             for (var nodeId in allNodes) {
@@ -1482,7 +1483,7 @@ Citing: paper citing main papers">
                             break
                         case "in-degree":
                             //console.log("norma")
-                            
+                            nodesMain.refresh;
                             allNodes = nodesMain.get({ returnType: "Object" });
                             allEdges = edgesMain.get({ returnType: "Object" });
                             var updateArray = [];
@@ -1502,6 +1503,7 @@ Citing: paper citing main papers">
                             nodes.update(updateArray)
                             break
                         case "reset":
+                            //nodesMain.refresh;
                             allNodes = nodesMain.get({ returnType: "Object" });
                             var updateArray = [];
                             for (var nodeId in allNodes) {
@@ -1512,6 +1514,7 @@ Citing: paper citing main papers">
                             break
                         case "out-degree":
                             //console.log("norma")
+                            nodesMain.refresh;
                             allNodes = nodesMain.get({ returnType: "Object" });
                             allEdges = edgesMain.get({ returnType: "Object" });
                             var updateArray = [];
