@@ -75,9 +75,12 @@ for paper in s.results:
 
     #paper_dict["CITED_BY"] = ab.citedby_count
     if abstracts != "n":
-        abstract_info = AbstractRetrieval(paper.eid, id_type="eid", view="FULL",
+        try:
+            abstract_info = AbstractRetrieval(paper.eid, id_type="eid", view="FULL",
                                refresh=False)
-        paper_dict["ABSTRACT"] = abstract_info.abstract
+            paper_dict["ABSTRACT"] = abstract_info.abstract
+        except:
+            paper_dict["ABSTRACT"] = ""
     else:
         paper_dict["ABSTRACT"] = ""
 
