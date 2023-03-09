@@ -53,12 +53,10 @@ total_cits = []  # additional list used to filter for references and citing pape
 
 # loop through found papers to get the references and citing papers
 print("Getting references and citing papers")
+print("loading information for paper: ", end=" ")
+print("")
 
 counter = 0
-print("loading information for paper: ", end=" ")
-
-print("")
-# print(s)
 for paper in s.results:
     counter += 1
     print("\r", str(int((counter) / nr_results * 100)) + "%" , end=" ")
@@ -73,7 +71,6 @@ for paper in s.results:
     except:
         ab = None
 
-    #paper_dict["CITED_BY"] = ab.citedby_count
     if abstracts != "n":
         try:
             abstract_info = AbstractRetrieval(paper.eid, id_type="eid", view="FULL",
@@ -84,18 +81,14 @@ for paper in s.results:
     else:
         paper_dict["ABSTRACT"] = ""
 
-
     if ab is not None and ab.references is not None :  # if we found references
         TotalRefCount = (ab.refcount)
-
         #print("found: " + str(TotalRefCount) + "References")
         CheckedRefsCount = 0
         ref_dict = {}  # create a temporary second dictionary for the references, this dict will later be included in paper_dict
         paper_dict["REFS"] = {}
         CheckedRefsCount += len(ab.references)
         for reference in ab.references:  ## fill the ref_dict with a list of references, each element is again a list of the main information, e.g. authors, years, title etc
-            #print(reference)
-
             if reference.id is not None:
                 ref_dict[reference.id] = [reference.authors_auid, (reference.authors), str(reference.coverDate)[:4],
                                               (reference.title), (reference.sourcetitle), (reference.doi)]  # title
@@ -110,19 +103,14 @@ for paper in s.results:
                     ref_dict[reference.id] = [reference.authors_auid, (reference.authors), str(reference.coverDate)[:4],
                                                   (reference.title), (reference.sourcetitle), (reference.doi)]  # title
                     total_refs.append(reference.id)
-
         paper_dict["REFS"] = ref_dict
-
     else:
         paper_dict["REFS"] = {}
-
 
     paper_dict["TITLE"] = [str(paper.author_names)[:100], str((paper.coverDate))[:4], (paper.title),
                            (paper.publicationName), paper.doi]
     paper_dict["DOI"] = paper.doi
     paper_dict["year"] = str((paper.coverDate))[:4]
-    # print(paper_dict["YEAR"])
-
     temp_keyword = str(paper.authkeywords).lower().split(" | ")
     paper_dict["KEYWORDS"] = temp_keyword if temp_keyword[0] != "none" else []
 
@@ -155,24 +143,21 @@ for paper in s.results:
         paper_dict["CITS"] = cit_dict
     else:
         paper_dict["CITS"] = {}
-
     # if counter == 10: print(paper_dict)
     master_dict[str(paper.eid).replace("2-s2.0-",
                                        "")] = paper_dict  # store all information gathered here in our main dictionary with paper ID as Key
 
 print("done")
 print("downloaded " + str(len(total_refs)) + " references and " + str(len(total_cits)) + " citing papers")
+
 ##############################################################
 ################## generate NetworkX network #################
 ##############################################################
-
 
 #here you can filter to include only most frequent references and citing papers
 extra_nodes_no = 0
 if extra_nodes == "a":
     extra_nodes_no = input("Minimum occurence for extra nodes for references and citing papers? \"\n" + ": ")
-
-
 
 total_refs = [item[0] for item in Counter(total_refs).most_common() if
               item[1] > int(extra_nodes_no) and item[0] not in master_dict.keys()]
@@ -189,7 +174,6 @@ biblio_vs_coit = []
 print("create  nodes")
 for node in (master_dict.keys()):
     # creating main nodes and transfer information from database
-
     G.add_node(node,
                myauth=master_dict[node]["AUTHOR-IDS"],
                year=master_dict[node]["year"],
@@ -202,7 +186,6 @@ for node in (master_dict.keys()):
                keywords=master_dict[node]["KEYWORDS"],
                url=master_dict[node]["TITLE"][4],
                checked=[],
-               #citen_by=master_dict[node]["CITED_BY"]
                )
     if extra_nodes != "n":  # if the user wants to, create nodes for the references and citing papers
         for temp_ref_id in master_dict[node]["REFS"].keys():
@@ -224,7 +207,6 @@ for node in (master_dict.keys()):
                 total_refs.remove(temp_ref_id)
         for temp_cit_id in master_dict[node]["CITS"].keys():
             if temp_cit_id in total_cits and temp_cit_id not in master_dict.keys():
-                #print(str(master_dict[node]["CITS"][temp_cit_id][2])[:4])
                 G.add_node(temp_cit_id,
                            myauth=(master_dict[node]["CITS"][temp_cit_id][0]),
                            title=(master_dict[node]["CITS"][temp_cit_id][1:]),
@@ -238,10 +220,6 @@ for node in (master_dict.keys()):
                 total_cits.remove(temp_cit_id)
 
 print("create  links")
-# csvFile = open("Konstantin_Innovation_diffusion.csv", "a", newline="", encoding='utf-8')  ## opens a new csv file
-# csvWriter = csv.writer(csvFile)
-# csvWriter.writerow(["id","Coauth", "cited", "biblio", "Cocit", "Keywords", "time", "same_journal"])
-
 
 counter = 0
 for node, info in G.nodes(data=True):  # foreach node
@@ -253,27 +231,21 @@ for node, info in G.nodes(data=True):  # foreach node
         mykeys = info["keywords"]
         mytime = info["title"][1]
         myjournal = info["title"][3]
-        # if counter / 100 == int(counter / 100):
-        #     print(counter)
-        # counter += 1
+
         for node_r, info2 in G.nodes(data=True):  # loop through all other nodes
             if node != node_r:
                 myauth2 = set(info2["myauth"])
-
                 # create edges. edges also have information on the nature of the relationship
-
                 ## cited
                 if node_r in myrefs:  # if second node is in my list of references
                     G.add_edge(node, node_r, cited=True)
                 if node_r in mycits:  # if second node is in my list of citing papers
                     G.add_edge(node_r, node, cited=True)
 
-
                 ## same authors
                 if len(list(myauth.intersection(
                         myauth2))) > 0:  # if the intersection between list of authors of A and B is bigger 0
                     G.add_edge(node_r, node, coauth=True)  # create edge
-
 
                 if G.nodes[node_r].get("type") == "main":  # for the fun stuff use again temporary variables
                     myrefs2 = (info2["myrefs"])
@@ -281,11 +253,8 @@ for node, info in G.nodes(data=True):  # foreach node
                     mykeys2 = info2["keywords"]
                     mytime2 = info2["title"][1]
                     myjournal2 = info2["title"][3]
-                    ##biblio_vs_coit.append([ len(list(myauth.intersection(myauth2))), 1 if node_r in myrefs or node_r in mycits else 0 ,  len(list(set(myrefs).intersection(set(myrefs2)))), len(list(set(mycits).intersection(set(mycits2)))), len(list(set(mykeys).intersection(set(mykeys2)))), (int(mytime) - int(mytime2)), 1 if myjournal == myjournal2 else 0])
-                    # csvWriter.writerow([str(node) + "and" + str(node_r) ,len(list(myauth.intersection(myauth2))), 1 if node_r in myrefs or node_r in mycits else 0 ,  len(list(set(myrefs).intersection(set(myrefs2)))), len(list(set(mycits).intersection(set(mycits2)))), len(list(set(mykeys).intersection(set(mykeys2)))), (int(mytime) - int(mytime2)), 1 if myjournal == myjournal2 else 0])
 
                     ## same reference
-
                     temp = len([x for x in myrefs if x in myrefs2])  # len(list(set(myrefs).intersection(set(myrefs2))))
                     if temp > 0:
                         G.add_edge(node_r, node, BiblioCoup=True, Biblio_strength=temp)
@@ -422,8 +391,5 @@ fout = open(searchstring.replace(" ", "").replace("\"", "").replace("*", "")[:60
             encoding="utf-8")
 fout.write(replacement)
 fout.close()
-
-
-
 
 #
