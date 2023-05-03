@@ -30,6 +30,7 @@ The publication data obatined by the data collection tool is used to create netw
 * Force-directed layout algorithm: Turn on/off the force-directed layout algorithm that places well-connected nodes in the centre of the network and less well-connected nodes at the periphery.
 * Hierarchical layout: y-coordinate of nodes in the canvas is based on the year of publication, placing older publications at the top and newer ones at the bottom.
 * Color by Journal: recolour nodes based on the publishing journal.
+
 * Export: exporting the network data to a Gephi-compatible file format.
 
 * Misc: Within PyblioNet you can manual reposition nodes, hover over nodes to get more information such as abstracts, keywords, etc., highlighting nodes and their direct peers by clicking on a node, and double-click on a node for a quick access to the publication directly from the publisher (based on the publication's DOI or, if not available, opens google scholar with the publication title as a search query).
