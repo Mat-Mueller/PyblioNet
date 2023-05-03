@@ -26,17 +26,17 @@ The publication data obatined by the data collection tool is used to create netw
 
 * Filter nodes by publication year: include only nodes with a punblication date within the set range
 
-* Filter edges by relation: Choose the network you want to visualize. CoAuthor: publications are connected if they share one or more authors; Citation: publications are connected if one cites the other; BiblioCoupling: publications are connected if they share one or more references; CoCitation: publications are connected if they share one or more citing publications; Keywords: publications are connected if they share one or more keywords.
+* Filter edges by relation: choose the network you want to visualize. CoAuthor: publications are connected if they share one or more authors; Citation: publications are connected if one cites the other; BiblioCoupling: publications are connected if they share one or more references; CoCitation: publications are connected if they share one or more citing publications; Keywords: publications are connected if they share one or more keywords.
 
-* Filter edges by weight: In case of bibliografic-coupling, co-citation and keyword relationships you can filter edges by minimum occurence.
+* Filter edges by weight: in case of bibliografic-coupling, co-citation and keyword relationships you can filter edges by minimum occurence.
 
-* Recolor nodes: Nodes are recolored based on a Louvain community detection algorithm.
+* Recolor nodes: nodes are recolored based on a Louvain community detection algorithm.
 
 * Search for nodes: enter a search term to highlight specific nodes.
 
 * Delete selected nodes: select nodes by clicking on them (for a selection of multiple nodes, hold Ctrl and click).
 
-* Force-directed layout algorithm: Turn on/off the force-directed layout algorithm that places well-connected nodes in the centre of the network and less well-connected nodes at the periphery.
+* Force-directed layout algorithm: turn on/off the force-directed layout algorithm that places well-connected nodes in the centre of the network and less well-connected nodes at the periphery.
 
 * Hierarchical layout: y-coordinate of nodes in the canvas is based on the year of publication, placing older publications at the top and newer ones at the bottom.
 
@@ -44,7 +44,7 @@ The publication data obatined by the data collection tool is used to create netw
 
 * Export: exporting the network data to a Gephi-compatible file format.
 
-* Misc: Within PyblioNet you can manual reposition nodes, hover over nodes to get more information such as abstracts, keywords, etc., highlighting nodes and their direct peers by clicking on a node, and double-click on a node for a quick access to the publication directly from the publisher (based on the publication's DOI or, if not available, opens google scholar with the publication title as a search query).
+* Misc: within PyblioNet you can manual reposition nodes, hover over nodes to get more information such as abstracts, keywords, etc., highlighting nodes and their direct peers by clicking on a node, and double-click on a node for a quick access to the publication directly from the publisher (based on the publication's DOI or, if not available, opens google scholar with the publication title as a search query).
 
 
 
