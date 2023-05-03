@@ -10,13 +10,17 @@ Usage
 Start the .py or .exe file. Upon first usage you will need to enter a Scopus APi key. Afterwards, simply enter your search term and follow the instructions. PyblioNet will create a html file with the resulting network.
 
 Installation
+============
 Download the .py and template.html file. Make sure they are in the same directory and run the Python file. Alternatively to the python file you can download the .exe and run it.
 
 Data collection
+===============
 
 
 Support
+=======
 Contact: m_mueller@uni-hohenheim.de
 
 License
+=======
 MIT License; see LICENSE.
