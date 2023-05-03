@@ -19,16 +19,27 @@ PyblioNet downloads publication data from the Scopus database via the Pybliometr
 Web-based analysis and visualisation tool 
 =========================================
 The publication data obatined by the data collection tool is used to create networks of publications, where each publication is represented as a node and the relationships between nodes (e.g. shared keywords, citations, references, etc.) are visualised by links connecting the nodes. Within the tool users can:
+
 * Filter nodes by type: e.g. show only nodes representing the main search results / show main search results + their references / show main search results + citing publications / etc.
+
 * Filter nodes by minimum degree: exclude all nodes with a degree smaller than user-input (the degree of a node refers to the nodes' current number of links)
+
 * Filter nodes by publication year: include only nodes with a punblication date within the set range
+
 * Filter edges by relation: Choose the network you want to visualize. CoAuthor: publications are connected if they share one or more authors; Citation: publications are connected if one cites the other; BiblioCoupling: publications are connected if they share one or more references; CoCitation: publications are connected if they share one or more citing publications; Keywords: publications are connected if they share one or more keywords.
+
 * Filter edges by weight: In case of bibliografic-coupling, co-citation and keyword relationships you can filter edges by minimum occurence.
+
 * Recolor nodes: Nodes are recolored based on a Louvain community detection algorithm.
+
 * Search for nodes: enter a search term to highlight specific nodes.
+
 * Delete selected nodes: select nodes by clicking on them (for a selection of multiple nodes, hold Ctrl and click).
+
 * Force-directed layout algorithm: Turn on/off the force-directed layout algorithm that places well-connected nodes in the centre of the network and less well-connected nodes at the periphery.
+
 * Hierarchical layout: y-coordinate of nodes in the canvas is based on the year of publication, placing older publications at the top and newer ones at the bottom.
+
 * Color by Journal: recolour nodes based on the publishing journal.
 
 * Export: exporting the network data to a Gephi-compatible file format.
