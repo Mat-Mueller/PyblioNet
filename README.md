@@ -7,7 +7,7 @@ Pyblionet covers two main components. The first component is a python based data
 
 The second component is a html / JavaScript analysis and visualisation tool building on the [VisJs](https://visjs.github.io/vis-network/docs/network/) Package. In the network each node represents a publication. Each edge represents a relation between two publications. Nodes’ positions are calculated via a force-directed or hierarchical layout algorithm. The analysis tool allows for filtering, and graphical analysis. Filtering can be done based on publication date, degree centrality or weight etc. Graphical analysis covers e.g. searching and highlighting nodes based on user input, community detection based on a louvain cluster detection method etc.
 
-![example chart](Examples/PyblioNet1.jpg)
+![example chart](Examples/PyblioNetV0.8.png)
 
 ## Usage
 Start the .py or .exe file. Upon first usage you will need to enter a [Scopus APi key](https://dev.elsevier.com/sc_apis.html). Afterwards, simply enter your search term and follow the instructions. PyblioNet will create a html file with the resulting network.
