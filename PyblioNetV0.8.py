@@ -3,6 +3,8 @@ import networkx as nx
 from pybliometrics.scopus import ScopusSearch
 from collections import Counter
 from tqdm import tqdm
+import webbrowser
+import textwrap
 
 
 
@@ -26,9 +28,9 @@ while answer == "n":
        nr_results = (s.get_results_size())
        print("found " + str(nr_results) + " results. Do you want to proceed?")
        answer = input("(y)es/(a)dvanced/(n)o: ")
-   except:
+   except Exception as e:
+       print("An unexpected error occurred:", e)
 
-       print("Error when checking the search string")
 
 
 if answer == "a":
@@ -37,9 +39,9 @@ if answer == "a":
     mode_cit =  input("Do you want to download information on citing papers? This is necessary for Co-citation... \n" + "y/n: ")
     extra_nodes =  input("Do you want create extra nodes for references and citing papers? \n" + "(y)es/(n)o/(a)sk later: ")
     abstracts =  input("Do you want to download abstracts? \n" + "y/n: ")
-    min_weight_biblio = (input("Minimum weight for bibliografic coupling? \n"))
-    min_weight_cocit = (input("Minimum weight for cocitation? \n"))
-    min_weight_key = (input("Minimum weight for keywords? \n"))
+    min_weight_biblio = (input("Minimum weight for bibliographic coupling? \n"))
+    min_weight_cocit = (input("Minimum weight for co-citation? \n"))
+    min_weight_key = (input("Minimum weight for shared keywords? \n"))
     if not (min_weight_biblio).isnumeric():
         min_weight_biblio = 0
     else:
@@ -188,7 +190,7 @@ print("downloaded " + str(len(total_refs)) + " references and " + str(len(total_
 #here you can filter to include only most frequent references and citing papers
 extra_nodes_no = 0
 if extra_nodes == "a":
-    extra_nodes_no = input("Minimum occurence for extra nodes for references and citing papers? \"\n" + ": ")
+    extra_nodes_no = input("Minimum occurrence for extra nodes for references and citing papers? \"\n" + ": ")
 
 
 
@@ -204,11 +206,8 @@ print(print("will use " + str(len(total_refs)) + " references and " + str(len(to
 G = nx.DiGraph()  # create an empty networkX graph
 
 
-# for key in list(master_dict.keys())[:10]:
-#     print(master_dict[key])
-#     print(master_dict[key].keys())
 
-print("create  nodes")
+print("create nodes")
 for node in (master_dict.keys()):
     # creating main nodes
     G.add_node(node,
@@ -260,57 +259,58 @@ for node in (master_dict.keys()):
 
 print("create links")
 
-Number_nodes = G.number_of_nodes()
 
-counter = 0
-for node, info in tqdm(G.nodes(data=True)):  # foreach node
-    counter +=1
 
-    if G.nodes[node].get(
-            "type") == "main":  # if its not a reference or citing paper as we dont include information inbetween references etc.
-        myauth = set(info["myauth"])  # store node's information in temporary variables to speed things up
-        myrefs = (info["myrefs"])
-        mycits = (info["mycits"])
-        mykeys = info["keywords"]
-        mytime = info["title"][1]
-        myjournal = info["title"][3]
+def compute_links():
 
-        for node_r, info2 in G.nodes(data=True):  # loop through all other nodes
-            if node != node_r:
-                myauth2 = set(info2["myauth"])
-                # create edges. edges also have information on the nature of the relationship
-                ## cited
-                if node_r in myrefs:  # if second node is in my list of references
-                    G.add_edge(node, node_r, cited="true")
-                if node_r in mycits:  # if second node is in my list of citing papers
-                    G.add_edge(node_r, node, cited="true")
 
-                ## same authors
-                if len(list(myauth.intersection(
-                        myauth2))) > 0:  # if the intersection between list of authors of A and B is bigger 0
-                    G.add_edge(node_r, node, coauth="true")  # create edge
 
-                if G.nodes[node_r].get("type") == "main":  # use again temporary variables
-                    myrefs2 = (info2["myrefs"])
-                    mycits2 = (info2["mycits"])
-                    mykeys2 = info2["keywords"]
-                    mytime2 = info2["title"][1]
-                    myjournal2 = info2["title"][3]
+    for node, info in tqdm(G.nodes(data=True)):  # foreach node
+        #SRCID ( 22900 )
 
-                    ## same reference
-                    temp = len([x for x in myrefs if x in myrefs2])
-                    if temp > min_weight_biblio:
-                        G.add_edge(node_r, node, BiblioCoup="true", Biblio_strength=temp)
-                    # Co-citation
-                    temp = len([x for x in mycits if x in mycits2])
-                    if temp > min_weight_cocit:
-                        G.add_edge(node_r, node, CoCit="true",
-                                   cocit_strength=temp)
-                    # Keywords
-                    temp = len([x for x in mykeys if x in mykeys2])
-                    if temp > min_weight_key:
-                        G.add_edge(node_r, node, KeyWord="true",
-                                   keyword_strength=temp)
+        if info["type"] == "main":  # if its not a reference or citing paper as we dont include information inbetween references etc.
+            myauth = set(info["myauth"])  # store node's information in temporary variables to speed things up
+            myrefs = (info["myrefs"])
+            mycits = (info["mycits"])
+            mykeys = info["keywords"]
+
+
+            for node_r, info2 in G.nodes(data=True):  # loop through all other nodes
+
+                if node != node_r :
+                    myauth2 = set(info2["myauth"])
+                    # create edges. edges also have information on the nature of the relationship
+                    ## cited
+                    if node_r in myrefs:  # if second node is in my list of references
+                        G.add_edge(node, node_r, cited="true")
+                    if node_r in mycits:  # if second node is in my list of citing papers
+                        G.add_edge(node_r, node, cited="true")
+
+                    ## same authors
+                    if len(list(myauth.intersection(
+                            myauth2))) > 0:  # if the intersection between list of authors of A and B is bigger 0
+                        G.add_edge(node_r, node, coauth="true")  # create edge
+
+                    if info2["type"] == "main":
+                        ## same reference
+                        temp = len([x for x in myrefs if x in (info2["myrefs"])])
+                        if temp > min_weight_biblio:
+                            G.add_edge(node_r, node, BiblioCoup="true", Biblio_strength=temp)
+                        # Co-citation
+                        temp = len([x for x in mycits if x in (info2["mycits"])])
+                        if temp > min_weight_cocit:
+                            G.add_edge(node_r, node, CoCit="true",
+                                       cocit_strength=temp)
+                        # Keywords
+                        temp = len([x for x in mykeys if x in info2["keywords"]])
+                        if temp > min_weight_key:
+                            G.add_edge(node_r, node, KeyWord="true",
+                                       keyword_strength=temp)
+
+
+compute_links()
+
+
 print(G)
 
 #gephi
@@ -339,10 +339,13 @@ if answer == "a" and input("Create Gephi file?: \n" + "y/n: ") == "y":
 
 list_node_dict = []  # temporary variables used to store information
 list_edge_dict = []  # temporary variables used to store information
+
+
+
 for node, info in G.nodes(data=True):
     node_dict = {}
     node_dict["color"] = info["color"]
-
+    node_dict["myauth"] = info["myauth"]
     if info["type"] == "main":
         node_dict["shape"] = "dot"
         node_dict["cite_count"] = info["cite_count"]
@@ -363,13 +366,17 @@ for node, info in G.nodes(data=True):
         node_dict["cite_count"] = 0
         #node_dict["size"] = 5 + G.degree[node]
     node_dict["journal"] = str(info["title"][3])
-    node_dict["title"] = " \n ".join([str(x)[:200] for x in info["title"] if (x) != None]) + \
-                         "\n Keywords: " + '\n'.join(
-        str(info["keywords"])[i:i + 100] for i in range(0, len(str(info["keywords"])), 100)) + \
-                         "\n Abstract: " + '\n'.join(str(info["myabstract"])[i:i + 100] for i in
-                                                           range(0, len(str(info["myabstract"])), 100)) + "\n DOI: " + str(info["url"])
+    node_dict["title"] = textwrap.fill(str(info["title"][0]) + " (" + str(info["title"][1]) + "). " + str(info["title"][2]) + ". " + str(info["title"][3]) + "." + "Keywords: " + ", ".join(info["keywords"]), 100) + "\n" + "\n"
+    #[i:i + 100] for i in range(0, len(str(info["keywords"]))
+    node_dict["title"] += textwrap.fill("Abstract: " + info["myabstract"] + " DOI: " + str(info["url"]), 100)
+                                        # node_dict["title"] = " \n ".join([str(x)[:200] for x in info["title"] if (x) != None]) + \
+    #                      "\n Keywords: " + '\n'.join(
+    #     str(info["keywords"])[i:i + 100] for i in range(0, len(str(info["keywords"])), 100)) + \
+    #                      "\n Abstract: " + '\n'.join(str(info["myabstract"])[i:i + 100] for i in
+    #                                                        range(0, len(str(info["myabstract"])), 100)) + "\n DOI: " + str(info["url"])
     #node_dict["label"] = " ".join([str(x)[:20] for x in G.nodes[node].get("title")[:2] if (x) != None])
     node_dict["type"] = info["type"]
+    node_dict["value"] = 1
     node_dict["label"] = " ".join([str(x)[:20] for x in info["title"][:2] if (x) != None])
     if str((info["url"])) != "None":
         node_dict["url"] =  "https://doi.org/" + str(G.nodes[node].get("url"))
@@ -390,7 +397,7 @@ for edge, edge2, info in G.edges(data=True):
 node_list = "nodes = new vis.DataSet(" + str(list_node_dict) + ")"
 edge_list = "edges = new vis.DataSet(" + str(list_edge_dict) + ")"
 
-file = open("PyblioNet_templateV0.8.html", "r", encoding="utf-8")
+file = open("PyblioNet_templateV0.8.2.html", "r", encoding="utf-8")
 replacement = ""
 for line in file:
     line = line.strip()
@@ -410,4 +417,6 @@ fout = open(searchstring.replace(" ", "").replace("\"", "").replace("*", "")[:60
 fout.write(replacement)
 fout.close()
 
+if input("done, open html file now?  \n" + "(y)es/(n)o:") != "n":
+    webbrowser.open(searchstring.replace(" ", "").replace("\"", "").replace("*", "")[:60] + "_final.html")
 #
