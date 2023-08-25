@@ -32,33 +32,35 @@ A single HTML file is created that contains both the network data and the analys
 
 PyblioNet also allows for different filtering and visualization methods. 
 
-Filtering: 
-- users can choose to display only publication data from the main search results or also citing and cited publications.
-- Further filtering of nodes can be done based on publication date, or the current degree centrality.
-- Link filtering allows users to easily switch between the five network levels co-authorship, citation, bibliographic coupling, co-citation or shared keywords.
-- In the case of bibliographic coupling, co-citation and keyword relationships, links can additionally be filtered by their weight (representing the number of commonly cited or citing literature or keywords).
+**Filtering:** 
+- Filter by type of nodes (only publication data from the main search results, citing or cited publications)
+- Filter by publication date
+- Filter by degree centrality
+- Filter links by network level (co-authorship, citation, bibliographic coupling, co-citation or shared keywords)
+- Filter by weight (number of commonly cited or citing literature or keywords, only in the case of bibliographic coupling, co-citation and keyword relationships) 
   
 **Visualization:** 
-- users can enter search queries to highlight nodes where e.g. the search query “agent based and network” will highlight nodes that mention “agent based” and “network”.
-- Resizing nodes can be done based on their current degree centrality (and in case of citation networks also based on their in-degree or out-degree) or number of citations.
-- Recoloring of nodes can be done to identify cluster structures within large and dense networks using a Louvain community detection algorithm as implemented in [JLouvain](https://github.com/upphiminn/jLouvain), or based on common journals (node colors are also used to identify clusters that are analyzed in more detail using the “Show information” button).
-- The default visualization of nodes is based on a force-directed layout algorithm placing well-connected nodes in the center of the network and less well-connected nodes at the periphery.
-- Users can also choose to use a hierarchical layout where the y-coordinate of nodes in the canvas is based on the publication year, hereby positioning older publications at the top and newer ones at the bottom (in case of a citation network, for example, the hierarchical layout shows the cumulative nature of a research field). 
+- Enter search queries to highlight nodes
+- Resize nodes by their current degree centrality or number of citations (in case of citation networks also based on their in-degree or out-degree)
+- Recolor based on a Louvain community detection algorithm as implemented in [JLouvain](https://github.com/upphiminn/jLouvain), or based on common journals
+- Activate a force-directed layout algorithm placing well-connected nodes in the center of the network and less well-connected nodes at the periphery
+- Activate hierarchical layout where the y-coordinate of nodes in the canvas is based on the publication year, hereby positioning older publications at the top and newer ones at the bottom 
 
-Misc:
-- the “Show information” button opens a new window showing the number of nodes and edges as well as the most frequent keywords and journals. If users have previously colored nodes (based on the Louvain algorithm or common journals), additional information for the communities is displayed. Additionally, users can delete selected nodes (for selecting multiple nodes, press and hold Ctrl),
-- export the current set of nodes in a Gephi compatible format,
-- or display additional navigation buttons.    
+**Misc:**
+- “Show information” opens a new window showing the number of nodes and edges as well as the most frequent keywords and journals (if users have previously colored nodes, additional information for the communities is displayed)
+- Delete selected nodes (for selecting multiple nodes, press and hold Ctrl)
+- Export the current set of nodes in a Gephi compatible format
+- Display additional navigation buttons   
 
-Direct user interaction: 
-- such as repositioning nodes manually via drag-and-drop, 
-- hovering over nodes to get more information such as abstract, keywords etc.
-- highlighting nodes and their direct peers by clicking on a node e.g. to identify related literature.
-- To quickly access the publication directly from the publisher, double-clicking on a node opens a new tab using the publication’s DOI or, if not available, opens google scholar with the publication’s title as a search query. 
+**Direct user interaction:** 
+- Manually reposition nodes via drag-and-drop
+- Hover over nodes to get more information such as abstract, keywords etc.
+- Highlight nodes and their direct peers by clicking on a node
+- Access the publication directly from the publisher by double-clicking on a node (opens a new tab using the publication’s DOI or, if not available, opens google scholar with the publication’s title as a search query) 
 
 
 ## Installation
-Download the .py and template.html file. Make sure they are in the same directory and run the Python file. Alternatively to the python file you can download the .exe and run it.
+Download the .py and template.html file. Make sure they are in the same directory and run the Python file. Alternatively, download the .exe and template.html file.
 
 ## Support
 Contact: m_mueller@uni-hohenheim.de
