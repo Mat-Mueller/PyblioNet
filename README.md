@@ -14,7 +14,7 @@ The second component is a html / JavaScript analysis and visualisation tool buil
 
 Users can use PyblioNet by executing a Python file, which requires the installation of the libraries such as [Pybliometrics](https://pybliometrics.readthedocs.io/en/stable/), [NetworkX](https://github.com/networkx/networkx), etc. Alternatively, users can run the exe file, which includes all necessary libraries. 
 
-** Downloading publication data **
+### Downloading publication data
 For the first use, users need to enter a valid Scopus API key in order to access the database via Pybliometrics ([Scopus APi key](https://dev.elsevier.com/sc_apis.html)). After that, users can start by entering Scopus advanced search query strings. PyblioNet will display how many publications were found using the search query and ask the user if they want to continue. If so, the user can continue with a standard setting, or with an advanced mode where the user can decide on the following settings: 
 -	Minimum citation count: exclude search results based on their citations. (standard: 0)
 -	Use cached data if possible: download publication data even if it is data cached on your computer. (default: yes)
@@ -38,7 +38,7 @@ Filtering:
 - Link filtering allows users to easily switch between the five network levels co-authorship, citation, bibliographic coupling, co-citation or shared keywords.
 - In the case of bibliographic coupling, co-citation and keyword relationships, links can additionally be filtered by their weight (representing the number of commonly cited or citing literature or keywords).
   
-Visualization: 
+** Visualization: ** 
 - users can enter search queries to highlight nodes where e.g. the search query “agent based and network” will highlight nodes that mention “agent based” and “network”.
 - Resizing nodes can be done based on their current degree centrality (and in case of citation networks also based on their in-degree or out-degree) or number of citations.
 - Recoloring of nodes can be done to identify cluster structures within large and dense networks using a Louvain community detection algorithm as implemented in [JLouvain](https://github.com/upphiminn/jLouvain), or based on common journals (node colors are also used to identify clusters that are analyzed in more detail using the “Show information” button).
