@@ -11,7 +11,7 @@ The first component is a python based data collection tool which downloads publi
 
 The second component is a html / JavaScript analysis and visualisation tool building on the `VisJs <https://visjs.github.io/vis-network/docs/network/>`_ Package. In the network each node represents a publication. Each edge represents a relation between two publications. Nodes’ positions are calculated via a force-directed or hierarchical layout algorithm. The analysis tool allows for filtering, and graphical analysis. Filtering can be done based on publication date, degree centrality or weight etc. Graphical analysis covers e.g. searching and highlighting nodes based on user input, community detection based on a louvain cluster detection method etc.
 
-![example chart](Examples/PyblioNetExample.png)
+![example chart](https://github.com/Mat-Mueller/PyblioNet/blob/main/Examples/PyblioNetExample.png)
 
 Usage
 ============
