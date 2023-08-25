@@ -28,7 +28,7 @@ For the first use, users need to enter a valid Scopus API key in order to access
 
 A single HTML file is created that contains both the network data and the analysis and visualization tools.
 
-** Visualization and analysis **
+### Visualization and analysis
 
 PyblioNet also allows for different filtering and visualization methods. 
 
@@ -38,7 +38,7 @@ Filtering:
 - Link filtering allows users to easily switch between the five network levels co-authorship, citation, bibliographic coupling, co-citation or shared keywords.
 - In the case of bibliographic coupling, co-citation and keyword relationships, links can additionally be filtered by their weight (representing the number of commonly cited or citing literature or keywords).
   
-** Visualization: ** 
+**Visualization:** 
 - users can enter search queries to highlight nodes where e.g. the search query “agent based and network” will highlight nodes that mention “agent based” and “network”.
 - Resizing nodes can be done based on their current degree centrality (and in case of citation networks also based on their in-degree or out-degree) or number of citations.
 - Recoloring of nodes can be done to identify cluster structures within large and dense networks using a Louvain community detection algorithm as implemented in [JLouvain](https://github.com/upphiminn/jLouvain), or based on common journals (node colors are also used to identify clusters that are analyzed in more detail using the “Show information” button).
