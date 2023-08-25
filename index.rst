@@ -13,6 +13,9 @@ The second component is a html / JavaScript analysis and visualisation tool buil
 
 ![example chart](PyblioNetExample.png)
 
+.. image:: PyblioNetExample.png
+
+
 Usage
 ============
 
