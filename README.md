@@ -44,7 +44,9 @@ PyblioNet also allows for different filtering and visualization methods.
 - Resize nodes by their current degree centrality or number of citations (in case of citation networks also based on their in-degree or out-degree)
 - Recolor based on a Louvain community detection algorithm as implemented in [JLouvain](https://github.com/upphiminn/jLouvain), or based on common journals
 - Activate a force-directed layout algorithm placing well-connected nodes in the center of the network and less well-connected nodes at the periphery
-- Activate hierarchical layout where the y-coordinate of nodes in the canvas is based on the publication year, hereby positioning older publications at the top and newer ones at the bottom 
+- Activate hierarchical layout where the y-coordinate of nodes in the canvas is based on the publication year, hereby positioning older publications at the top and newer ones at the bottom
+- Change the spring length between nodes
+- Change overall node size
 
 **Misc:**
 - “Show information” opens a new window showing the number of nodes and edges as well as the most frequent keywords and journals (if users have previously colored nodes, additional information for the communities is displayed)
