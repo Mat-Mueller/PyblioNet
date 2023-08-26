@@ -16,7 +16,7 @@ Users can use PyblioNet by executing a Python file, which requires the installat
 
 ### Downloading publication data
 For the first use, users need to enter a valid Scopus API key in order to access the database via Pybliometrics ([Scopus APi key](https://dev.elsevier.com/sc_apis.html)). After that, users can start by entering Scopus advanced search query strings. PyblioNet will display how many publications were found using the search query and ask the user if they want to continue. If so, the user can continue with a standard setting, or with an advanced mode where the user can decide on the following settings: 
--	Minimum citation count: exclude search results based on their citations. (standard: 0)
+-	Minimum citation count: exclude search results based on their citations. (default: 0)
 -	Use cached data if possible: download publication data even if it is data cached on your computer. (default: yes)
 -	Download information about citing papers: downloading information on publications citing the search results is necessary for co-citation analysis but takes additional time. (default: yes)
 -	Create extra nodes for references and citing papers: creating extra nodes for references and citing papers can result in huge networks that may be too large to visualize. If the user chooses “later”, PiblioNet will ask for a minimum occurrence of extra nodes for references and citing papers. (default: yes)
