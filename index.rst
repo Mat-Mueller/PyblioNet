@@ -1,7 +1,7 @@
 PyblioNet
 ============
 
-PyblioNet is a software tool for the creation, visualization and analysis of bibliometric networks. It combines a Python-based data collection tool that accesses the Scopus database with a browser-based visualization and analysis tool. It allows users to create networks of publication data based on citations, co-citations, co-authorships, bibliographic coupling, and shared keywords. 
+PyblioNet is a software tool for the creation, visualization and analysis of bibliometric networks based on `Pybliometrics <https://pybliometrics.readthedocs.io/en/stable/>`_, `NetworkX <https://github.com/networkx/networkx>`_ and `VisJs <https://visjs.github.io/vis-network/docs/network/>`_. It combines a Python-based data collection tool that accesses the Scopus database with a browser-based visualization and analysis tool. It allows users to create networks of publication data based on citations, co-citations, co-authorships, bibliographic coupling, and shared keywords. 
 
 
 Description
