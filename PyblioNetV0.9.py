@@ -5,6 +5,7 @@ from collections import Counter
 from tqdm import tqdm
 import webbrowser
 import textwrap
+from itertools import combinations
 
 
 
@@ -116,7 +117,7 @@ for paper in tqdm(s.results):
             CheckedRefsCount += len(ab.references)
             for reference in ab.references:  ## fill the ref_dict with a list of references, each element is again a list of the main information, e.g. authors, years, title etc
                 if reference.id is not None:
-                    ref_dict[reference.id] = [reference.authors_auid, (reference.authors), str(reference.coverDate)[:4],
+                    ref_dict[reference.id] = [reference.authors_auid, ((reference.authors)), str(reference.coverDate)[:4],
                                                   (reference.title), (reference.sourcetitle), (reference.doi)]  # title
             while TotalRefCount > CheckedRefsCount:
 
@@ -125,13 +126,13 @@ for paper in tqdm(s.results):
                 CheckedRefsCount += len(ab.references)
                 for reference in ab.references:  ## fill the ref_dict with a list of references, each element is again a list of the main information, e.g. authors, years, title etc
                     if reference.id is not None:
-                        ref_dict[reference.id] = [reference.authors_auid, (reference.authors), str(reference.coverDate)[:4],
+                        ref_dict[reference.id] = [reference.authors_auid, ((reference.authors)), str(reference.coverDate)[:4],
                                                       (reference.title), (reference.sourcetitle), (reference.doi)]  # title
             paper_dict["REFS"] = ref_dict
         else:
             paper_dict["REFS"] = {}
         try:
-            paper_dict["authorNames"] = (paper.author_names.split(";"))
+            paper_dict["authorNames"] = (paper.author_names.split(sep=";"))
         except:
             paper_dict["authorNames"] = ["NA"]
 
@@ -154,15 +155,16 @@ for paper in tqdm(s.results):
             cit_dict = {}
             if citing != None:
                 for citing_paper in citing:
+
                     try:
                         cit_dict[str(citing_paper.eid).replace("2-s2.0-", "")] = [citing_paper.author_ids.split(sep=";"),
-                                                                                  citing_paper.author_names,
+                                                                                  (citing_paper.author_names),
                                                                                   str(citing_paper.coverDate)[:4],
                                                                                   (citing_paper.title),
                                                                                   (citing_paper.publicationName),
                                                                                   citing_paper.doi]
                     except:
-                        cit_dict[str(citing_paper.eid).replace("2-s2.0-", "")] = ["", citing_paper.author_names,
+                        cit_dict[str(citing_paper.eid).replace("2-s2.0-", "")] = ["", (citing_paper.author_names),
                                                                                   str(citing_paper.coverDate)[:4],
                                                                                   (citing_paper.title),
                                                                                   (citing_paper.publicationName),
@@ -215,13 +217,14 @@ print("create nodes")
 for node in (master_dict.keys()):
     # creating main nodes
     G.add_node(node,
+               type="main",
                myauth=master_dict[node]["AUTHOR-IDS"],
                year=master_dict[node]["year"],
                title=master_dict[node]["TITLE"],
                myrefs=master_dict[node]["REFS"].keys(),
                mycits=master_dict[node]["CITS"].keys(),
                myabstract=master_dict[node]["ABSTRACT"],
-               type="main",
+
                color="#6495ED",
                keywords=master_dict[node]["KEYWORDS"],
                url=master_dict[node]["TITLE"][4],
@@ -235,30 +238,33 @@ for node in (master_dict.keys()):
                     temp_auth = (master_dict[node]["REFS"][temp_ref_id][0].split(sep=";"))
                 except:
                     temp_auth = ""
+                #print((master_dict[node]["REFS"][temp_ref_id][1]))
                 G.add_node(temp_ref_id,
+                           type="REF",
                            myauth=temp_auth,
                            title=(master_dict[node]["REFS"][temp_ref_id][1:]),
                            year=(master_dict[node]["REFS"][temp_ref_id][2]),
-                           type="REF",
+
                            color="#DE3163",
                            url=(master_dict[node]["REFS"][temp_ref_id][5]),
                            keywords = [],
                            myabstract="",
-                           authorNames=master_dict[node]["authorNames"]
+                           authorNames=str(master_dict[node]["REFS"][temp_ref_id][1]).split(sep=";")
                            )
                 total_refs.remove(temp_ref_id)
         for temp_cit_id in master_dict[node]["CITS"].keys():
             if temp_cit_id in total_cits and temp_cit_id not in master_dict.keys():
                 G.add_node(temp_cit_id,
+                           type="CIT",
                            myauth=(master_dict[node]["CITS"][temp_cit_id][0]),
                            title=(master_dict[node]["CITS"][temp_cit_id][1:]),
                            year=str(master_dict[node]["CITS"][temp_cit_id][2])[:4],
-                           type="CIT",
+
                            color="#1a762c",
                            url=(master_dict[node]["CITS"][temp_cit_id][5]),
                            keywords=[],
                            myabstract="",
-                           authorNames=master_dict[node]["authorNames"]
+                           authorNames=str(master_dict[node]["CITS"][temp_cit_id][1]).split(sep=";"),
                            )
                 total_cits.remove(temp_cit_id)
 
@@ -270,52 +276,51 @@ print("create links")
 
 def compute_links():
 
+    list_of_nodes = G.nodes(data=False)
 
 
-    for node, info in tqdm(G.nodes(data=True)):  # foreach node
-        #SRCID ( 22900 )
+    # citations
+    for node, info in  G.nodes(data=True):
+        if info["type"] == "main":
+            for other_node in [other_node for other_node in info["myrefs"] if other_node in list_of_nodes]:
+                G.add_edge(node, other_node, cited="true")
+            for other_node in [other_node for other_node in info["mycits"] if other_node in list_of_nodes]:
+                G.add_edge(other_node, node, cited="true")
 
-        if info["type"] == "main":  # if its not a reference or citing paper as we dont include information inbetween references etc.
-            myauth = set(info["myauth"])  # store node's information in temporary variables to speed things up
-            myrefs = (info["myrefs"])
-            mycits = (info["mycits"])
-            mykeys = info["keywords"]
+
+    # shared authorship
+    for node1, node2, in (combinations([(node[0], node[1]) for node in G.nodes(data="myauth")], 2)):
+
+        if [x for x in node1[1] if x in node2[1]] != []:
+            G.add_edge(node1[0], node2[0], coauth="true")  # create edge
 
 
-            for node_r, info2 in G.nodes(data=True):  # loop through all other nodes
 
-                if node != node_r :
-                    myauth2 = set(info2["myauth"])
-                    # create edges. edges also have information on the nature of the relationship
-                    ## cited
-                    if node_r in myrefs:  # if second node is in my list of references
-                        G.add_edge(node, node_r, cited="true")
-                    if node_r in mycits:  # if second node is in my list of citing papers
-                        G.add_edge(node_r, node, cited="true")
-
-                    ## same authors
-                    if len(list(myauth.intersection(
-                            myauth2))) > 0:  # if the intersection between list of authors of A and B is bigger 0
-                        G.add_edge(node_r, node, coauth="true")  # create edge
-
-                    if info2["type"] == "main":
+    #bibliographic coupling, co-citation, shared keywords, only possible for main nodes
+    for node1, node2, in (combinations([node for node in G.nodes(data=True) if node[1]["type"] == "main"], 2)):
                         ## same reference
-                        temp = len([x for x in myrefs if x in (info2["myrefs"])])
-                        if temp > min_weight_biblio:
-                            G.add_edge(node_r, node, BiblioCoup="true", Biblio_strength=temp)
-                        # Co-citation
-                        temp = len([x for x in mycits if x in (info2["mycits"])])
-                        if temp > min_weight_cocit:
-                            G.add_edge(node_r, node, CoCit="true",
-                                       cocit_strength=temp)
-                        # Keywords
-                        temp = len([x for x in mykeys if x in info2["keywords"]])
-                        if temp > min_weight_key:
-                            G.add_edge(node_r, node, KeyWord="true",
-                                       keyword_strength=temp)
+            temp = len([x for x in (node1[1]["myrefs"]) if x in (node2[1]["myrefs"])])
+            if temp > min_weight_biblio:
+                G.add_edge(node2[0], node1[0], BiblioCoup="true", Biblio_strength=temp)
+            # Co-citation
+            temp = len([x for x in (node1[1]["mycits"]) if x in (node2[1]["mycits"])])
+            if temp > min_weight_cocit:
+                G.add_edge(node2[0], node1[0], CoCit="true",
+                           cocit_strength=temp)
+            # Keywords
+            temp = len([x for x in node1[1]["keywords"] if x in node2[1]["keywords"]])
+            if temp > min_weight_key:
+                G.add_edge(node2[0], node1[0], KeyWord="true",
+                           keyword_strength=temp)
+
+
+
+
+import time
 
 
 compute_links()
+
 
 
 print(G)
@@ -353,8 +358,8 @@ for node, info in G.nodes(data=True):
     node_dict = {}
     node_dict["color"] = info["color"]
     node_dict["myauth"] = info["myauth"]
-    node_dict["authorNames"] = info["authorNames"]
-    node_dict["myauthName"] = info["myauth"]
+    #node_dict["authorNames"] = info["authorNames"]
+    #node_dict["myauthName"] = info["myauth"]
     if info["type"] == "main":
         node_dict["shape"] = "dot"
         node_dict["cite_count"] = info["cite_count"]
@@ -375,7 +380,7 @@ for node, info in G.nodes(data=True):
         node_dict["cite_count"] = 0
         #node_dict["size"] = 5 + G.degree[node]
     node_dict["journal"] = str(info["title"][3])
-    node_dict["title"] = textwrap.fill(str(info["title"][0]) + " (" + str(info["title"][1]) + "). " + str(info["title"][2]) + ". " + str(info["title"][3]) + "." + "Keywords: " + ", ".join(info["keywords"]), 100) + "\n" + "\n"
+    node_dict["title"] = textwrap.fill(str(info["title"][0]) + " (" + str(info["title"][1])  + "). " + str(info["title"][2]) + ". " + str(info["title"][3]) + "." + "Keywords: " + ", ".join(info["keywords"]), 100) + "\n" + "\n"
     #[i:i + 100] for i in range(0, len(str(info["keywords"]))
     node_dict["title"] += textwrap.fill("Abstract: " + info["myabstract"] + " DOI: " + str(info["url"]), 100)
                                         # node_dict["title"] = " \n ".join([str(x)[:200] for x in info["title"] if (x) != None]) + \
@@ -386,7 +391,13 @@ for node, info in G.nodes(data=True):
     #node_dict["label"] = " ".join([str(x)[:20] for x in G.nodes[node].get("title")[:2] if (x) != None])
     node_dict["type"] = info["type"]
     node_dict["value"] = 1
-    node_dict["label"] = " ".join([str(x)[:20] for x in info["title"][:2] if (x) != None])
+    #print(str(info["authorNames"]))
+    tempauthors = ([(x.split(sep=",")[0]) for x in info["authorNames"]])#[x.split(",") for x in info["authorNames"]])#" ".join([str(x)[:20] for x in info["title"][:2] if (x) != None])
+    if len(tempauthors) < 3:
+            node_dict["label"] = ", ".join(tempauthors) + " (" + info["title"][1] + ") "
+    else:
+        node_dict["label"] = (tempauthors[0]) + " et al. (" + info["title"][1] + ") "
+    #print(node_dict["label"])
     if str((info["url"])) != "None":
         node_dict["url"] =  "https://doi.org/" + str(G.nodes[node].get("url"))
     else:
