@@ -187,6 +187,9 @@ total_cits = (([item for sublist in ([[x for x in (paper["CITS"])] for paper in 
 total_refs = (([item for sublist in ([[x for x in (paper["REFS"])] for paper in master_dict.values()]) for item in sublist]))
 
 
+
+
+
 print("downloaded " + str(len(total_refs)) + " references and " + str(len(total_cits)) + " citing papers")
 
 ##############################################################
@@ -211,11 +214,19 @@ print(print("will use " + str(len(total_refs)) + " references and " + str(len(to
 
 G = nx.DiGraph()  # create an empty networkX graph
 
-
+Author_paper_dict = {} # helper dict store author -> paper combinations which allows for a quick computation of authorship networks
 
 print("create nodes")
 for node in (master_dict.keys()):
     # creating main nodes
+
+    for id in master_dict[node]["AUTHOR-IDS"]:
+        if id in Author_paper_dict:
+            Author_paper_dict[id].append(node)
+        else:
+            Author_paper_dict[id] = [node]
+
+
     G.add_node(node,
                type="main",
                myauth=master_dict[node]["AUTHOR-IDS"],
@@ -234,11 +245,22 @@ for node in (master_dict.keys()):
     if extra_nodes != "n":  # if the user wants to, create nodes for the references and citing papers
         for temp_ref_id in master_dict[node]["REFS"].keys():
             if temp_ref_id in total_refs and temp_ref_id not in master_dict.keys():
+
+
+
+
                 try:
-                    temp_auth = (master_dict[node]["REFS"][temp_ref_id][0].split(sep=";"))
+                    temp_auth = (master_dict[node]["REFS"][temp_ref_id][0].split(sep="; "))
                 except:
                     temp_auth = ""
                 #print((master_dict[node]["REFS"][temp_ref_id][1]))
+
+                for id in temp_auth:
+
+                    if id in Author_paper_dict:
+                        Author_paper_dict[id].append(temp_ref_id)
+                    else:
+                        Author_paper_dict[id] = [temp_ref_id]
                 G.add_node(temp_ref_id,
                            type="REF",
                            myauth=temp_auth,
@@ -254,6 +276,14 @@ for node in (master_dict.keys()):
                 total_refs.remove(temp_ref_id)
         for temp_cit_id in master_dict[node]["CITS"].keys():
             if temp_cit_id in total_cits and temp_cit_id not in master_dict.keys():
+
+                for id in (master_dict[node]["CITS"][temp_cit_id][0]):
+
+                    if id in Author_paper_dict:
+                        Author_paper_dict[id].append(temp_cit_id)
+                    else:
+                        Author_paper_dict[id] = [temp_cit_id]
+
                 G.add_node(temp_cit_id,
                            type="CIT",
                            myauth=(master_dict[node]["CITS"][temp_cit_id][0]),
@@ -267,7 +297,6 @@ for node in (master_dict.keys()):
                            authorNames=str(master_dict[node]["CITS"][temp_cit_id][1]).split(sep=";"),
                            )
                 total_cits.remove(temp_cit_id)
-
 
 
 print("create links")
@@ -289,10 +318,16 @@ def compute_links():
 
 
     # shared authorship
-    for node1, node2, in (combinations([(node[0], node[1]) for node in G.nodes(data="myauth")], 2)):
+    # for node1, node2, in (combinations([(node[0], node[1]) for node in G.nodes(data="myauth")], 2)):
+    #
+    #     if [x for x in node1[1] if x in node2[1]] != []:
+    #         G.add_edge(node1[0], node2[0], coauth="true")  # create edge
 
-        if [x for x in node1[1] if x in node2[1]] != []:
-            G.add_edge(node1[0], node2[0], coauth="true")  # create edge
+    for author in Author_paper_dict:
+        if len(Author_paper_dict[author]) > 1:
+            for myPaper1, myPaper2 in combinations(Author_paper_dict[author], 2):
+                G.add_edge(myPaper1, myPaper2, coauth="true")
+
 
 
 
@@ -380,9 +415,9 @@ for node, info in G.nodes(data=True):
         node_dict["cite_count"] = 0
         #node_dict["size"] = 5 + G.degree[node]
     node_dict["journal"] = str(info["title"][3])
-    node_dict["title"] = textwrap.fill(str(info["title"][0]) + " (" + str(info["title"][1])  + "). " + str(info["title"][2]) + ". " + str(info["title"][3]) + "." + "Keywords: " + ", ".join(info["keywords"]), 100) + "\n" + "\n"
+    node_dict["title"] = textwrap.fill(str(info["title"][0]) + " (" + str(info["title"][1])  + "). " + str(info["title"][2]) + ". " + str(info["title"][3]) + ". Keywords: " + ", ".join(info["keywords"]), 100) + "\n" + "\n"
     #[i:i + 100] for i in range(0, len(str(info["keywords"]))
-    node_dict["title"] += textwrap.fill("Abstract: " + info["myabstract"] + " DOI: " + str(info["url"]), 100)
+    node_dict["title"] += textwrap.fill("Abstract: " + str(info["myabstract"]) + " DOI: " + str(info["url"]), 100)
                                         # node_dict["title"] = " \n ".join([str(x)[:200] for x in info["title"] if (x) != None]) + \
     #                      "\n Keywords: " + '\n'.join(
     #     str(info["keywords"])[i:i + 100] for i in range(0, len(str(info["keywords"])), 100)) + \
@@ -404,6 +439,7 @@ for node, info in G.nodes(data=True):
         node_dict["url"] = "https://scholar.google.de/scholar?q=" + str(info["title"]) + "\""
     #node_dict["degree"] = G.degree[node]
     list_node_dict.append(node_dict)
+
 
 list_edge_dict = []
 for edge, edge2, info in G.edges(data=True):
