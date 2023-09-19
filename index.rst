@@ -1,15 +1,15 @@
 PyblioNet
 ============
 
-PyblioNet is a software tool for the creation, visualization and analysis of bibliometric networks based on `Pybliometrics <https://pybliometrics.readthedocs.io/en/stable/>`_, `NetworkX <https://github.com/networkx/networkx>`_ and `VisJs <https://visjs.github.io/vis-network/docs/network/>`_. It combines a Python-based data collection tool that accesses the Scopus database with a browser-based visualization and analysis tool. It allows users to create networks of publication data based on citations, co-citations, co-authorships, bibliographic coupling, and shared keywords. 
+PyblioNet is a software tool for the creation, visualization and analysis of bibliometric networks based on `Pybliometrics <https://pybliometrics.readthedocs.io/en/stable/>`_, `NetworkX <https://github.com/networkx/networkx>`_ and `VisJs <https://visjs.github.io/vis-network/docs/network/>`_. It combines a Python-based data collection tool that accesses the Scopus database with a browser-based visualization and analysis tool. It allows users to create networks of publication data based on citations, co-citations, shared authors, bibliographic coupling, and shared keywords. 
 
 
 Description
 ============
 
-The first component is a python based data collection tool which downloads publication data from the Scopus database via `Pybliometrics <https://pybliometrics.readthedocs.io/en/stable/>`_. Initial Scopus search is done by the user via advanced search query strings using the scopus search api. Based on this initial publication data, further information on cited and citing research are collected which e.g. allows for computing bibliographic coupling and co-citation relationships for the initial publication data (using the scopus Abstract Retrieval API and scopus Search API). The publication data is then used to create a network where each publication is represented as a node in the network. Relationships are computed based on co-authorship analysis, citation analysis, bibliographic coupling, co-citation analysis, and shared keywords:
+The first component is a python based data collection tool which downloads publication data from the Scopus database via `Pybliometrics <https://pybliometrics.readthedocs.io/en/stable/>`_. Initial Scopus search is done by the user via advanced search query strings using the scopus search api. Based on this initial publication data, further information on cited and citing research are collected which e.g. allows for computing bibliographic coupling and co-citation relationships for the initial publication data (using the scopus Abstract Retrieval API and scopus Search API). The publication data is then used to create a network where each publication is represented as a node in the network. Relationships are computed based on shared authors analysis, citation analysis, bibliographic coupling, co-citation analysis, and shared keywords:
 
-* Co-Authorship: nodes are connected if they share one or more authors (using Scopus author IDs)
+* Shared authors: nodes are connected if they share one or more authors (using Scopus author IDs)
 *	Citation: nodes are connected (via directed links) if one cites the other (using Scopus EIDs)
 *	Bibliographic Coupling: nodes are connected if they share one or more references (using Scopus EIDs, only for Scopus main results)
 *	Co-citation: nodes are connected if they share one or more citing papers (using Scopus EIDs, only for Scopus main results)
@@ -52,7 +52,7 @@ PyblioNet also allows for different filtering and visualization methods.
 * Filter by type of nodes (only publication data from the main search results, citing or cited publications)
 * Filter by publication date
 * Filter by degree centrality
-* Filter links by network level (co-authorship, citation, bibliographic coupling, co-citation or shared keywords)
+* Filter links by network level (shared authors, citation, bibliographic coupling, co-citation or shared keywords)
 * Filter by weight (number of commonly cited or citing literature or keywords, only in the case of bibliographic coupling, co-citation and keyword relationships) 
   
 **Visualization:** 
